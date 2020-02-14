@@ -1,0 +1,17 @@
+{
+    "name": "renault-zoe-api/x",
+    "authors": [
+        {
+            "name": "Cédric NOËL",
+            "email": "cedric.noel@actimage.com"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^6.5"
+    },
+    "autoload": {
+        "psr-0": {
+            "RenaultZoeApi": "src/"
+        }
+    }
+}
