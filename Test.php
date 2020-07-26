@@ -11,7 +11,7 @@ $strFile = dirname(__FILE__) . '/data/credentials.json';
 $arrTokens = json_decode(file_get_contents($strFile), true);
 
 // TODO SI NO TOKEN => LOGIN, SINON CHECK+REFRESH DATAS
-//$res = Giya::login('***REMOVED***','***REMOVED***');
+//$res = Giya::login('my_renault_login','my_renault_password');
 //Kamereon::getAccounts($res);
 
 // TODO CHECK TOKEN VALIDITY OR REFRESH        ;
@@ -35,5 +35,5 @@ if($objDate < $dateNow) {
     
 }
 
-Kamereon::getBattery('***REMOVED***', $arrTokens);
-Kamereon::getCockpit('***REMOVED***', $arrTokens); 
+Kamereon::getBattery('VIN', $arrTokens);
+Kamereon::getCockpit('VIN', $arrTokens); 
