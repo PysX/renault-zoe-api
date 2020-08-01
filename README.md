@@ -1,6 +1,8 @@
 # PHP client for Renault Zoe API
 
 ![PHP Composer](https://github.com/PysX/renault-zoe-api/workflows/PHP%20Composer/badge.svg)
+[![License: MIT](https://img.shields.io/github/license/PysX/renault-zoe-api.svg)](LICENSE.md)
+
 
 This PHP package manages the communication with the private My Renault API used by the official mobile applications.
 
