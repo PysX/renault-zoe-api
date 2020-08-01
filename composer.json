@@ -1,9 +1,10 @@
 {
-    "name": "renault-zoe-api/x",
+    "name": "pysx/renault-zoe-api",
+    "description": "PHP Client for Renault Zoe API (MyRenault)",
+    "license": "MIT",
     "authors": [
         {
-            "name": "Cédric NOËL",
-            "email": "cedric.noel@actimage.com"
+            "name": "PysX"
         }
     ],
     "require": {
