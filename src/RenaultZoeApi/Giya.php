@@ -5,16 +5,17 @@ namespace RenaultZoeApi;
 
 class Giya
 {
-   private static $strRootUrl = "https://accounts.eu1.gigya.com";
+    // TODO should be retrieved from a local parameter
+    private static $strRootUrl = "https://accounts.eu1.gigya.com";
     private static $strApiKey = "3_e8d4g4SE_Fo8ahyHwwP7ohLGZ79HKNN2T8NjQqoNnk6Epj6ilyYwKdHUyCw3wuxz";
 
     /**
      * Login de l'utilisateur
      * Permet de récupérer le token puis dans un second temps le personId
      *
-     * @param [type] $strUserName
-     * @param [type] $strPassword
-     * @return void
+     * @param string $strUserName
+     * @param string $strPassword
+     * @return array ['GiyaToken', 'GiyaPersonId', GiyaIdToken', 'GiyaIdTokenTime'] or 'KO' or null
      */
     public static function login($strUserName, $strPassword) {
 
@@ -29,16 +30,16 @@ class Giya
             ]]
         );
         $strResult = $objRes->getBody()->getContents();
-        ////log::add('zoe', 'debug', 'Giya response: ' . $strResult);
+        // TODO : LOG
         $objJsonRes = json_decode($strResult);
 
         if($objJsonRes->{'statusCode'} != 200) {
-            ////log::add('zoe', 'debug', 'Giya : login error');
+            // TODO : LOG
             return 'KO';
         } else {
-            ////log::add('zoe', 'debug', 'Giya : login success');
+            // TODO : LOG
             $strToken = $objJsonRes->{'sessionInfo'}->{'cookieValue'};
-            ////log::add('zoe', 'debug', 'Giya : token = '. $strToken);
+            // TODO : LOG
 
             $arrTokens = self::getPersonId($strToken);
 
@@ -50,11 +51,11 @@ class Giya
         }
     }
 
-/**
+    /**
      * Permet de récupérer le personId après avoir récupére le token
      *
-     * @param [type] $strGiyaToken
-     * @return void
+     * @param string $strGiyaToken
+     * @return array ['GiyaPersonId', GiyaIdToken', 'GiyaIdTokenTime'] or null
      */
     private static function getPersonId($strGiyaToken) {
         $objClient = new \GuzzleHttp\Client([
@@ -66,18 +67,18 @@ class Giya
             ]]
         );
         $strResult = $objRes->getBody()->getContents();
-        //log::add('zoe', 'debug', 'Giya response: ' . $strResult);
+        // TODO : LOG
         $objJsonRes = json_decode($strResult);
 
         if($objJsonRes->{'statusCode'} != 200) {
-            //log::add('zoe', 'debug', 'Giya : error retrieving personId');
+            // TODO : LOG
             return null;
         } else {
-            //log::add('zoe', 'debug', 'Giya : personId success');
+            // TODO : LOG
             $strPersonId = $objJsonRes->{'data'}->{'personId'};
-            //log::add('zoe', 'debug', 'Giya : personId = '. $strPersonId);
+            // TODO : LOG
 
-            $arrIdToken = self::getJwtToken($strGiyaToken, $strPersonId, $objJsonRes->{'data'}->{'gigyaDataCenter'});
+            $arrIdToken = self::getJwtToken($strGiyaToken);
             if($arrIdToken != null) {
                 return array_merge(['GiyaPersonId' => $strPersonId], $arrIdToken);
             } else {
@@ -86,8 +87,13 @@ class Giya
         }
     }
 
-    // TODO supprimer parametres inutiles (personid datacenter)
-    public static function getJwtToken($strGiyaToken, $strGiyaPersonId, $strGiyaDatacenter) {
+    /**
+     * Get personnal token, public as this expires it could be call for refresh
+     *
+     * @param string $strGiyaToken
+     * @return array ['GiyaIdToken', 'GiyaIdTokenTime'] or null
+     */
+    public static function getJwtToken($strGiyaToken) {
         $objClient = new \GuzzleHttp\Client([
             'headers' => [ 'Content-Type' => 'application/json' ]
         ]);
@@ -95,23 +101,22 @@ class Giya
         $objRes = $objClient->post(self::$strRootUrl .'/accounts.getJWT',
             ['form_params' => [
                 'oauth_token'=> $strGiyaToken,
-                'fields' => 'data.personId,data.gigyaDataCenter',//$strGiyaPersonId.','.$strGiyaDatacenter,
+                'fields' => 'data.personId,data.gigyaDataCenter',
                 'expiration' => 900
             ]]
         );
         $strResult = $objRes->getBody()->getContents();
-        //log::add('zoe', 'debug', 'Giya response: ' . $strResult);
+        // TODO : LOG
         $objJsonRes = json_decode($strResult);
 
         if($objJsonRes->{'statusCode'} != 200) {
-            //log::add('zoe', 'debug', 'Giya : error retrieving id token');
+            // TODO : LOG
             return null;
         } else {
-            //log::add('zoe', 'debug', 'Giya : id token success');
+            // TODO : LOG
             $strIdToken = $objJsonRes->{'id_token'};
-            //log::add('zoe', 'debug', 'Giya : Id Token = '. $strIdToken);
+            // TODO : LOG
             return ['GiyaIdToken' => $strIdToken, 'GiyaIdTokenTime' => $objJsonRes->{'time'}];
         }
-
     }    
 }

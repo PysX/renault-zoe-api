@@ -5,9 +5,16 @@ namespace RenaultZoeApi;
 
 class Kamereon
 {
+    // TODO should be retrieved from a local parameter
     private static $strRootUrl = "https://api-wired-prod-1-euw1.wrd-aws.com";
     private static $strApiKey = "oF09WnKqvBDcrQzcW1rJNpjIuy7KdGaB";
     
+    /**
+     * Get accounts from Kamereon with Giya tokens. Save tokens in a file
+     *
+     * @param array $arrGiyaTokens
+     * @return array with all tokens or null
+     */
     public static function getAccounts($arrGiyaTokens) {
 
         $objClient = new \GuzzleHttp\Client([
@@ -21,128 +28,108 @@ class Kamereon
         $strUrl = self::$strRootUrl .'/commerce/v1/persons/'.$arrGiyaTokens['GiyaPersonId'].'?country=GB';
         $objRes = $objClient->get($strUrl);
         $strResult = $objRes->getBody()->getContents();
-        ////log::add('zoe', 'debug', 'Kamereon response: ' . $strResult);
+        // TODO : LOG
         $objJsonRes = json_decode($strResult);
 
         if($objJsonRes->{'accounts'} == null) {
-            ////log::add('zoe', 'debug', 'Kamereon : error retrieving id token');
+            // TODO : LOG
             return null;
         } else {
-            ////log::add('zoe', 'debug', 'Kamereon : accounts success');
+            // TODO : LOG
             $arrAccounts = $objJsonRes->{'accounts'};
-            ////log::add('zoe', 'debug', 'Kamereon : Accounts = '. $arrAccounts);
+            // TODO : LOG
+            // TODO : ADD possibility for multiple accounts
             $strAccountId = $arrAccounts[0]->{'accountId'};
 
-            self::getToken($strAccountId,$arrGiyaTokens);
-            //return ['GiyaIdToken' => $strIdToken, 'GiyaIdTokenTime' => $objJsonRes->{'time'}];
+            // Kamereon token no more needed: no more "getToken" function
+            // save tokens in file
+            return self::saveTokens($strAccountId,$arrGiyaTokens);
         }
     }
 
-    // TODO supprimer arrgiyatokens à passer à chaque fois
-    public static function getToken($strAccountId,$arrGiyaTokens,$returnTokenOnly = false) {
-        $objClient = new \GuzzleHttp\Client([
-            'headers' => [ 
-                'Content-Type' => 'application/json',
-                'apikey' => self::$strApiKey,
-                'x-gigya-id_token' => $arrGiyaTokens['GiyaIdToken']
-                ]
-        ]);
-
-        $strUrl = self::$strRootUrl .'/commerce/v1/accounts/'.$strAccountId.'/kamereon/token?country=GB';
-        $objRes = $objClient->get($strUrl);
-        $strResult = $objRes->getBody()->getContents();
-        ////log::add('zoe', 'debug', 'Kamereon response: ' . $strResult);
-        $objJsonRes = json_decode($strResult);
-
-        if($objJsonRes->{'accessToken'} == null) {
-            ////log::add('zoe', 'debug', 'Kamereon : error retrieving accessToken');
-            return null;
-        } else {
-            ////log::add('zoe', 'debug', 'Kamereon : accessToken success');
-            $strAccessToken = $objJsonRes->{'accessToken'};
-            ////log::add('zoe', 'debug', 'Kamereon : accessToken = '. $strAccessToken);
-
-            
-            $arrGiyaTokens['accountId'] = $strAccountId;
-            $arrGiyaTokens['kamereon-authorization'] = $objJsonRes->{'accessToken'};          
-            $arrTokens = $arrGiyaTokens;
+    /**
+     * Save tokens in file
+     *
+     * @param string $strAccountId
+     * @param array $arrGiyaTokens
+     * @return array 
+     */
+    public static function saveTokens($strAccountId,$arrGiyaTokens) {
+            $arrGiyaTokens['accountId'] = $strAccountId;         
 
             // save tokens
             $strFile = dirname(__FILE__) . '/../../data/credentials.json';
-            file_put_contents($strFile, json_encode($arrTokens, JSON_PRETTY_PRINT));
-
+            // TODO : LOG
+            file_put_contents($strFile, json_encode($arrGiyaTokens, JSON_PRETTY_PRINT));
             
-            if($returnTokenOnly) {
-                return $objJsonRes->{'accessToken'};
-            }         
-            
-            
-            self::getVehicules($strAccountId,$strAccessToken,$arrGiyaTokens);
-       }
+            return $arrGiyaTokens;
     }
 
-
-    private static function getVehicules($strAccountId,$strAccessToken,$arrGiyaTokens) {
-        $arrHeaders = [ 
-            'apikey' => self::$strApiKey,
-            'x-gigya-id_token' => $arrGiyaTokens['GiyaIdToken'],
-            'x-kamereon-authorization' => 'Bearer '.$strAccessToken
-        ];
-
-        $strUrl = self::$strRootUrl .'/commerce/v1/accounts/'.$strAccountId.'/vehicles?country=GB';
-
-        $objJsonRes = self::_get($strUrl, $strAccessToken,$arrGiyaTokens);
-        //var_dump($objJsonRes);
-        
-        self::getInfo($strAccountId,'VF1AG000664302909','battery-status',$strAccessToken,$arrGiyaTokens,2);
-        
-        //self::getInfo($strAccountId,'VF1AG000664302909','location',$strAccessToken,$arrGiyaTokens);
-        
-        // not implemented : self::getInfo($strAccountId,'VF1AG000664302909','notification-settings',$strAccessToken,$arrGiyaTokens);
-        
-        //self::getInf2($strAccountId,'VF1AG000664302909','charge-history?type=day&start=20200101&end=20200201',$strAccessToken,$arrGiyaTokens);
-    }
-
-    private static function _get($strUrl, $strAccessToken = null,$arrGiyaTokens) {
+    /**
+     * Generic call to API
+     *
+     * @param string $strUrl
+     * @param array $arrGiyaTokens
+     * @return string 
+     */
+    private static function _get($strUrl, $arrGiyaTokens) {
         $arrHeaders = [ 
             'apikey' => self::$strApiKey,
             'x-gigya-id_token' => $arrGiyaTokens['GiyaIdToken']            
         ];
-        if($strAccessToken != null) {
-            $arrHeaders = array_merge($arrHeaders, ['x-kamereon-authorization' => 'Bearer '.$strAccessToken]);
-        }
 
         $objClient = new \GuzzleHttp\Client(['headers' => $arrHeaders]);
         $objRes = $objClient->get($strUrl);
         $strResult = $objRes->getBody()->getContents();
-        ////log::add('zoe', 'debug', 'Kamereon response: ' . $strResult);
+        // TODO : LOG
+        return $strResult;
+    }
 
-        return json_decode($strResult);
+    /**
+     * Get full infomations about vehicles
+     *
+     * @param array $arrTokens
+     * @return string
+     */
+    public static function getVehicles($arrTokens) {
+        $strUrl = self::$strRootUrl .'/commerce/v1/accounts/'.$arrTokens['accountId'].'/vehicles?country=GB';
+        return self::_get($strUrl,$arrTokens);
+    }
+
+    /**
+     * Generic call api for infos about a vehicle
+     * 
+     * @param array $arrTokens
+     * @param string $strVin
+     * @param string $strEndpoint
+     * @param array $arrGiyaTokens
+     * @param integer $intVersion
+     * @return string
+     */
+    private static function getInfo($arrTokens,$strVin,$strEndpoint,$intVersion=1) {
+        $strUrl = self::$strRootUrl.'/commerce/v1/accounts/'.$arrTokens['accountId'].'/kamereon/kca/car-adapter/v'.$intVersion.'/cars/'.$strVin.'/'.$strEndpoint.'?country=FR';
+        return self::_get($strUrl,$arrTokens);
     }
     
-    
-    public static function getInfo($strAccountId,$strVin,$strEndpoint,$strAccessToken,$arrGiyaTokens,$intVersion=1) {
-        $strUrl = self::$strRootUrl.'/commerce/v1/accounts/'.$strAccountId.'/kamereon/kca/car-adapter/v'.$intVersion.'/cars/'.$strVin.'/'.$strEndpoint.'?country=FR';
-        $res = self::_get($strUrl,$strAccessToken,$arrGiyaTokens);
-        
-        var_dump($res);
-    }
-    public static function getInf2($strAccountId,$strVin,$strEndpoint,$strAccessToken,$arrGiyaTokens,$intVersion=1) {
-        $strUrl = self::$strRootUrl.'/commerce/v1/accounts/'.$strAccountId.'/kamereon/kca/car-adapter/v'.$intVersion.'/cars/'.$strVin.'/'.$strEndpoint.'&country=FR';
-        $res = self::_get($strUrl,$strAccessToken,$arrGiyaTokens);
-        
-        var_dump($res);
-    }
-    
+    /**
+     * Get battery status
+     *
+     * @param string $strVin
+     * @param array $arrTokens
+     * @return string
+     */
     public static function getBattery($strVin,$arrTokens) {
-        self::getInfo($arrTokens['accountId'],$strVin,'battery-status',$arrTokens['kamereon-authorization'],$arrTokens,2);
+        return self::getInfo($arrTokens,$strVin,'battery-status',2);
     }
     
-     public static function getCockpit($strVin,$arrTokens) {
-        self::getInfo($arrTokens['accountId'],$strVin,'cockpit',$arrTokens['kamereon-authorization'],$arrTokens);
+    /**
+     * Get Cockpit 
+     *
+     * @param string $strVin
+     * @param array $arrTokens
+     * @return string
+     */
+    public static function getCockpit($strVin,$arrTokens) {
+        return self::getInfo($arrTokens,$strVin,'cockpit');
     }
-    
-    
-    
-    
 }
