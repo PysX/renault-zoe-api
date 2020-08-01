@@ -1,5 +1,7 @@
 # PHP client for Renault Zoe API
 
+![PHP Composer](https://github.com/PysX/renault-zoe-api/workflows/PHP%20Composer/badge.svg)
+
 This PHP package manages the communication with the private My Renault API used by the official mobile applications.
 
 It is fully inspired by the Python client [Pyze](https://github.com/jamesremuscat/pyze/) by jamesremuscat.
