@@ -80,9 +80,8 @@ class Kamereon
 
         $objClient = new \GuzzleHttp\Client(['headers' => $arrHeaders]);
         $objRes = $objClient->get($strUrl);
-        $strResult = $objRes->getBody()->getContents();
         // TODO : LOG
-        return $strResult;
+        return $objRes->getBody()->getContents();
     }
 
     /**
