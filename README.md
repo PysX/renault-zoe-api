@@ -11,6 +11,21 @@ File RunExample.php provides an example of the use.
 For the first use, you have to "login" to retrieve and the tokens. Tokens are saved in a local file, it prevents to retrieve them for each API call.
 You have to test if tokens needs to be refreshed (see RunExample.php for an example).
 
+```php
+use RenaultZoeApi\Giya;
+use RenaultZoeApi\Kamereon;
+
+// Login, you need to replace login and password
+$arrGiyaTokens = Giya::login('my_renault_login','my_renault_password');
+// Get AccountId and save tokens in credentials.json file
+$arrTokens = Kamereon::getAccounts($arrGiyaTokens);
+// Get vehicle, You can get VIN here
+Kamereon::getVehicles($arrTokens); 
+
+// Get battery status, you need to replace vin
+// Result is json string that you can decode
+$strJson = Kamereon::getBattery('my_vin', $arrTokens);
+```
 
 ## Contributing
 
@@ -25,7 +40,7 @@ You need PHP 7.1+
 
 #### How to test the project
 
-TODO
+TODO: not implemented
 
 #### Open a pull request
 
