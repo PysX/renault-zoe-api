@@ -1,6 +1,6 @@
 # PHP client for Renault Zoe API
 
-![PHP Checks](https://github.com/PysX/renault-zoe-api/workflows/PHP%20Composer/badge.svg)
+![PHP Checks](https://github.com/PysX/renault-zoe-api/workflows/PHP%20Checks/badge.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
 
 
