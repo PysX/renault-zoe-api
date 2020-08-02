@@ -27,7 +27,7 @@ function run()
         checkTokens($arrTokens);
     } else {
         say('> credentials.json not found, first login');
-        $arrGiyaTokens = Giya::login('***REMOVED***','***REMOVED***');
+        $arrGiyaTokens = Giya::login('my_renault_login','my_renault_password');
         // get AccountId and save tokens in credentials.json file
         $arrTokens = Kamereon::getAccounts($arrGiyaTokens);
         Kamereon::getVehicles($arrTokens); // You can get VIN here
@@ -51,7 +51,7 @@ function run()
     say($strJson);
 
     say('> getChargeMode via Kamereon class');
-    $strJson = Kamereon::getChargeMode('VF1AG000664302909', $arrTokens);
+    $strJson = Kamereon::getChargeMode('my_vin', $arrTokens);
     say($strJson);
     
     /* Not implemented server side
@@ -59,7 +59,12 @@ function run()
     $strJson = Kamereon::getLockStatus('VF1AG000664302909', $arrTokens);
     say($strJson);
     */
-    
+    /* Not implemented server side
+    say('> getNotificationSettings via Kamereon class');
+    $strJson = Kamereon::getNotificationSettings('VF1AG000664302909', $arrTokens);
+    say($strJson);
+    */
+
     // Example via Vehicle class
     // TODO
 }
