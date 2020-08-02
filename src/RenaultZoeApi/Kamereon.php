@@ -157,6 +157,16 @@ class Kamereon
         return self::getInfo($arrTokens, $strVin, 'location');
     }
     
-
+    /**
+     * Get Charging settings
+     *
+     * @param  string $strVin
+     * @param  array  $arrTokens
+     * @return string
+     */
+    public static function getChargingSettings($strVin, $arrTokens)
+    {
+        return self::getInfo($arrTokens, $strVin, 'charging-settings');
+    }
 
 }
