@@ -83,7 +83,12 @@ class Kamereon
         ];
 
         $objClient = new \GuzzleHttp\Client(['headers' => $arrHeaders]);
-        $objRes = $objClient->get($strUrl);
+        try {
+            $objRes = $objClient->get($strUrl);
+        } catch(\GuzzleHttp\Exception\ClientException $e) {
+            return $strUrl." ".$e->getResponse()->getBody()->getContents();
+        }
+
         // TODO : LOG
         return $objRes->getBody()->getContents();
     }
@@ -116,7 +121,8 @@ class Kamereon
                 . $arrTokens['accountId']
                 . '/kamereon/kca/car-adapter/v'
                 . $intVersion . '/cars/'
-                . $strVin . '/' . $strEndpoint . '?country=FR';
+                . $strVin . '/' . $strEndpoint .
+                (strstr($strEndpoint,'?')?'&':'?') .'country=FR';
         return self::get($strUrl, $arrTokens);
     }
     
@@ -180,6 +186,22 @@ class Kamereon
     {
         return self::getInfo($arrTokens, $strVin, 'charge-mode');
     }
+
+
+    /**
+     * Get HVAC history
+     * Not implemented server side
+     * 
+     * @param  string $strVin
+     * @param  array  $arrTokens
+     * @return string
+     */
+    public static function getHvacHistory($strVin, $arrTokens)
+    {
+        return self::getInfo($arrTokens, $strVin, 'hvac-history?type=day&start=20200701&end=20200731');
+    }
+
+
 
     /**
      * Get Notification settings
