@@ -193,10 +193,11 @@ class Kamereon
      * Not implemented server side
      * 
      * @param  string $strVin
+     * @param array $arrParams type = day or month, date start and end format YYYYMMDD
      * @param  array  $arrTokens
      * @return string
      */
-    public static function getHvacHistory($strVin, $arrTokens)
+    public static function getHvacHistory($strVin, $arrParams, $arrTokens)
     {
         return self::getInfo($arrTokens, $strVin, 'hvac-history?type=day&start=20200701&end=20200731');
     }
