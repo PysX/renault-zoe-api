@@ -182,6 +182,19 @@ class Kamereon
     }
 
     /**
+     * Get Notification settings
+     * Not implemented server side
+     * 
+     * @param  string $strVin
+     * @param  array  $arrTokens
+     * @return string
+     */
+    public static function getNotificationSettings($strVin, $arrTokens)
+    {
+        return self::getInfo($arrTokens, $strVin, 'notification-settings');
+    }
+
+    /**
      * Get Lock Status
      * Not implemented server side
      *
