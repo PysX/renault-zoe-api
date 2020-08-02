@@ -41,7 +41,30 @@ function run()
     say('> getCockpit via Kamereon class');
     $strJson = Kamereon::getCockpit('my_vin', $arrTokens);
     say($strJson);
+
+    say('> getLocation via Kamereon class');
+    $strJson = Kamereon::getLocation('my_vin', $arrTokens);
+    say($strJson);
+
+    say('> getChargingSettings via Kamereon class');
+    $strJson = Kamereon::getChargingSettings('my_vin', $arrTokens);
+    say($strJson);
+
+    say('> getChargeMode via Kamereon class');
+    $strJson = Kamereon::getChargeMode('my_vin', $arrTokens);
+    say($strJson);
     
+    /* Not implemented server side
+    say('> getLockStatus via Kamereon class');
+    $strJson = Kamereon::getLockStatus('***REMOVED***', $arrTokens);
+    say($strJson);
+    */
+    /* Not implemented server side
+    say('> getNotificationSettings via Kamereon class');
+    $strJson = Kamereon::getNotificationSettings('***REMOVED***', $arrTokens);
+    say($strJson);
+    */
+
     // Example via Vehicle class
     // TODO
 }
