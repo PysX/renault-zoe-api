@@ -65,6 +65,24 @@ function run()
     say($strJson);
     */
 
+    /* Not implemented server side
+    say('> getHvacHistory via Kamereon class');
+    $strJson = Kamereon::getHvacHistory('my_vin',['type'=>'day','start'=>'20200701','end'=>'20200731'], $arrTokens);
+    say($strJson);
+    */
+
+    /*
+    say('> getHvacHSessions via Kamereon class');
+    $strJson = Kamereon::getHvacSessions('my_vin',['start'=>'20200701','end'=>'20200731'], $arrTokens);
+    say($strJson);
+    */
+
+    /*
+    say('> getHvacStatus via Kamereon class');
+    $strJson = Kamereon::getHvacStatus('my_vin', $arrTokens);
+    say($strJson);
+    */
+
     // Example via Vehicle class
     // TODO
 }

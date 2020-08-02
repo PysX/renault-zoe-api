@@ -83,7 +83,12 @@ class Kamereon
         ];
 
         $objClient = new \GuzzleHttp\Client(['headers' => $arrHeaders]);
-        $objRes = $objClient->get($strUrl);
+        try {
+            $objRes = $objClient->get($strUrl);
+        } catch (\GuzzleHttp\Exception\ClientException $e) {
+            return $strUrl . " " . $e->getResponse()->getBody()->getContents();
+        }
+
         // TODO : LOG
         return $objRes->getBody()->getContents();
     }
@@ -116,7 +121,8 @@ class Kamereon
                 . $arrTokens['accountId']
                 . '/kamereon/kca/car-adapter/v'
                 . $intVersion . '/cars/'
-                . $strVin . '/' . $strEndpoint . '?country=FR';
+                . $strVin . '/' . $strEndpoint .
+                (strstr($strEndpoint, '?') ? '&' : '?') . 'country=FR';
         return self::get($strUrl, $arrTokens);
     }
     
@@ -180,6 +186,57 @@ class Kamereon
     {
         return self::getInfo($arrTokens, $strVin, 'charge-mode');
     }
+
+    /**
+      * Get HVAC Status
+      * Not implemented server side
+      *
+      * @param  string $strVin
+      * @param  array  $arrTokens
+      * @return string
+      */
+    public static function getHvacStatus($strVin, $arrTokens)
+    {
+        return self::getInfo($arrTokens, $strVin, 'hvac-status');
+    }
+
+    /**
+     * Get HVAC history
+     * Not implemented server side
+     *
+     * @param  string $strVin
+     * @param array $arrParams type = day or month, date start and end format YYYYMMDD
+     * @param  array  $arrTokens
+     * @return string
+     */
+    public static function getHvacHistory($strVin, $arrParams, $arrTokens)
+    {
+        return self::getInfo(
+            $arrTokens,
+            $strVin,
+            'hvac-history?type=' . $arrParams['type'] . '&start=' . $arrParams['start'] . '&end=' . $arrParams['end']
+        );
+    }
+
+    /**
+     * Get HVAC sessions
+     * Not implemented server side
+     *
+     * @param  string $strVin
+     * @param array $arrParams date start and end format YYYYMMDD
+     * @param  array  $arrTokens
+     * @return string
+     */
+    public static function getHvacSessions($strVin, $arrParams, $arrTokens)
+    {
+        return self::getInfo(
+            $arrTokens,
+            $strVin,
+            'hvac-sessions?start=' . $arrParams['start'] . '&end=' . $arrParams['end']
+        );
+    }
+
+
 
     /**
      * Get Notification settings
