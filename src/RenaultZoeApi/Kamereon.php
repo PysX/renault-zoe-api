@@ -169,4 +169,17 @@ class Kamereon
         return self::getInfo($arrTokens, $strVin, 'charging-settings');
     }
 
+    /**
+     * Get Lock Status
+     * Not implemented server side
+     *
+     * @param  string $strVin
+     * @param  array  $arrTokens
+     * @return string
+     */
+    public static function getLockStatus($strVin, $arrTokens)
+    {
+        return self::getInfo($arrTokens, $strVin, 'lock-status');
+    }
+
 }

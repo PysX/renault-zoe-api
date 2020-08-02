@@ -49,6 +49,12 @@ function run()
     say('> getChargingSettings via Kamereon class');
     $strJson = Kamereon::getChargingSettings('my_vin', $arrTokens);
     say($strJson);
+
+    /* Not implemented server side
+    say('> getLockStatus via Kamereon class');
+    $strJson = Kamereon::getLockStatus('VF1AG000664302909', $arrTokens);
+    say($strJson);
+    */
     
     // Example via Vehicle class
     // TODO
