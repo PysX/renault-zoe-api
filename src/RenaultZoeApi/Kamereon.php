@@ -47,21 +47,19 @@ class Kamereon
 
             // Kamereon token no more needed: no more "getToken" function
             // save tokens in file
-            return self::saveTokens($strAccountId, $arrGiyaTokens);
+            $arrGiyaTokens['accountId'] = $strAccountId;
+            return self::saveTokens($arrGiyaTokens);
         }
     }
 
     /**
      * Save tokens in file
      *
-     * @param  string $strAccountId
      * @param  array  $arrGiyaTokens
      * @return array
      */
-    public static function saveTokens($strAccountId, $arrGiyaTokens)
+    public static function saveTokens($arrGiyaTokens)
     {
-        $arrGiyaTokens['accountId'] = $strAccountId;
-
         // save tokens
         $strFile = dirname(__FILE__) . '/../../data/credentials.json';
         // TODO : LOG
@@ -145,4 +143,20 @@ class Kamereon
     {
         return self::getInfo($arrTokens, $strVin, 'cockpit');
     }
+
+    /**
+     * Get Location
+     * Only for ZE50
+     *
+     * @param  string $strVin
+     * @param  array  $arrTokens
+     * @return string
+     */
+    public static function getLocation($strVin, $arrTokens)
+    {
+        return self::getInfo($arrTokens, $strVin, 'location');
+    }
+    
+
+
 }
