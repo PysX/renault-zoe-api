@@ -77,7 +77,11 @@ function run()
     say($strJson);
     */
 
-
+    /*
+    say('> getHvacStatus via Kamereon class');
+    $strJson = Kamereon::getHvacStatus('my_vin', $arrTokens);
+    say($strJson);
+    */
 
     // Example via Vehicle class
     // TODO

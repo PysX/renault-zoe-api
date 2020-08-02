@@ -187,6 +187,18 @@ class Kamereon
         return self::getInfo($arrTokens, $strVin, 'charge-mode');
     }
 
+   /**
+     * Get HVAC Status
+     * Not implemented server side
+     * 
+     * @param  string $strVin
+     * @param  array  $arrTokens
+     * @return string
+     */
+    public static function getHvacStatus($strVin, $arrTokens)
+    {
+        return self::getInfo($arrTokens, $strVin, 'hvac-status');
+    }
 
     /**
      * Get HVAC history
