@@ -168,6 +168,18 @@ class Kamereon
     {
         return self::getInfo($arrTokens, $strVin, 'charging-settings');
     }
+    
+    /**
+     * Get Charge Mode
+     *
+     * @param  string $strVin
+     * @param  array  $arrTokens
+     * @return string
+     */
+    public static function getChargeMode($strVin, $arrTokens)
+    {
+        return self::getInfo($arrTokens, $strVin, 'charge-mode');
+    }
 
     /**
      * Get Lock Status
@@ -181,5 +193,6 @@ class Kamereon
     {
         return self::getInfo($arrTokens, $strVin, 'lock-status');
     }
+    
 
 }
