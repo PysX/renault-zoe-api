@@ -2,7 +2,9 @@
 
 namespace RenaultZoeApi;
 
-
+/**
+ * Class for Giya auth platform
+ */
 class Kamereon
 {
     // TODO should be retrieved from a local parameter
@@ -12,26 +14,28 @@ class Kamereon
     /**
      * Get accounts from Kamereon with Giya tokens. Save tokens in a file
      *
-     * @param array $arrGiyaTokens
+     * @param  array $arrGiyaTokens
      * @return array with all tokens or null
      */
-    public static function getAccounts($arrGiyaTokens) {
-
-        $objClient = new \GuzzleHttp\Client([
-            'headers' => [ 
+    public static function getAccounts($arrGiyaTokens)
+    {
+        $objClient = new \GuzzleHttp\Client(
+            [
+            'headers' => [
                 'Content-Type' => 'application/json',
                 'apikey' => self::$strApiKey,
                 'x-gigya-id_token' => $arrGiyaTokens['GiyaIdToken']
                 ]
-        ]);
+            ]
+        );
 
-        $strUrl = self::$strRootUrl .'/commerce/v1/persons/'.$arrGiyaTokens['GiyaPersonId'].'?country=GB';
+        $strUrl = self::$strRootUrl . '/commerce/v1/persons/' . $arrGiyaTokens['GiyaPersonId'] . '?country=GB';
         $objRes = $objClient->get($strUrl);
         $strResult = $objRes->getBody()->getContents();
         // TODO : LOG
         $objJsonRes = json_decode($strResult);
 
-        if($objJsonRes->{'accounts'} == null) {
+        if ($objJsonRes->{'accounts'} == null) {
             // TODO : LOG
             return null;
         } else {
@@ -43,39 +47,41 @@ class Kamereon
 
             // Kamereon token no more needed: no more "getToken" function
             // save tokens in file
-            return self::saveTokens($strAccountId,$arrGiyaTokens);
+            return self::saveTokens($strAccountId, $arrGiyaTokens);
         }
     }
 
     /**
      * Save tokens in file
      *
-     * @param string $strAccountId
-     * @param array $arrGiyaTokens
-     * @return array 
+     * @param  string $strAccountId
+     * @param  array  $arrGiyaTokens
+     * @return array
      */
-    public static function saveTokens($strAccountId,$arrGiyaTokens) {
-            $arrGiyaTokens['accountId'] = $strAccountId;         
+    public static function saveTokens($strAccountId, $arrGiyaTokens)
+    {
+        $arrGiyaTokens['accountId'] = $strAccountId;
 
-            // save tokens
-            $strFile = dirname(__FILE__) . '/../../data/credentials.json';
-            // TODO : LOG
-            file_put_contents($strFile, json_encode($arrGiyaTokens, JSON_PRETTY_PRINT));
+        // save tokens
+        $strFile = dirname(__FILE__) . '/../../data/credentials.json';
+        // TODO : LOG
+        file_put_contents($strFile, json_encode($arrGiyaTokens, JSON_PRETTY_PRINT));
             
-            return $arrGiyaTokens;
+        return $arrGiyaTokens;
     }
 
     /**
      * Generic call to API
      *
-     * @param string $strUrl
-     * @param array $arrGiyaTokens
-     * @return string 
+     * @param  string $strUrl
+     * @param  array  $arrGiyaTokens
+     * @return string
      */
-    private static function _get($strUrl, $arrGiyaTokens) {
-        $arrHeaders = [ 
+    private static function get($strUrl, $arrGiyaTokens)
+    {
+        $arrHeaders = [
             'apikey' => self::$strApiKey,
-            'x-gigya-id_token' => $arrGiyaTokens['GiyaIdToken']            
+            'x-gigya-id_token' => $arrGiyaTokens['GiyaIdToken']
         ];
 
         $objClient = new \GuzzleHttp\Client(['headers' => $arrHeaders]);
@@ -87,48 +93,56 @@ class Kamereon
     /**
      * Get full infomations about vehicles
      *
-     * @param array $arrTokens
+     * @param  array $arrTokens
      * @return string
      */
-    public static function getVehicles($arrTokens) {
-        $strUrl = self::$strRootUrl .'/commerce/v1/accounts/'.$arrTokens['accountId'].'/vehicles?country=GB';
-        return self::_get($strUrl,$arrTokens);
+    public static function getVehicles($arrTokens)
+    {
+        $strUrl = self::$strRootUrl . '/commerce/v1/accounts/' . $arrTokens['accountId'] . '/vehicles?country=GB';
+        return self::get($strUrl, $arrTokens);
     }
 
     /**
      * Generic call api for infos about a vehicle
-     * 
-     * @param array $arrTokens
-     * @param string $strVin
-     * @param string $strEndpoint
-     * @param array $arrGiyaTokens
-     * @param integer $intVersion
+     *
+     * @param  array   $arrTokens
+     * @param  string  $strVin
+     * @param  string  $strEndpoint
+     * @param  array   $arrGiyaTokens
+     * @param  integer $intVersion
      * @return string
      */
-    private static function getInfo($arrTokens,$strVin,$strEndpoint,$intVersion=1) {
-        $strUrl = self::$strRootUrl.'/commerce/v1/accounts/'.$arrTokens['accountId'].'/kamereon/kca/car-adapter/v'.$intVersion.'/cars/'.$strVin.'/'.$strEndpoint.'?country=FR';
-        return self::_get($strUrl,$arrTokens);
+    private static function getInfo($arrTokens, $strVin, $strEndpoint, $intVersion = 1)
+    {
+        $strUrl = self::$strRootUrl . '/commerce/v1/accounts/'
+                . $arrTokens['accountId']
+                . '/kamereon/kca/car-adapter/v'
+                . $intVersion . '/cars/'
+                . $strVin . '/' . $strEndpoint . '?country=FR';
+        return self::get($strUrl, $arrTokens);
     }
     
     /**
      * Get battery status
      *
-     * @param string $strVin
-     * @param array $arrTokens
+     * @param  string $strVin
+     * @param  array  $arrTokens
      * @return string
      */
-    public static function getBattery($strVin,$arrTokens) {
-        return self::getInfo($arrTokens,$strVin,'battery-status',2);
+    public static function getBattery($strVin, $arrTokens)
+    {
+        return self::getInfo($arrTokens, $strVin, 'battery-status', 2);
     }
     
     /**
-     * Get Cockpit 
+     * Get Cockpit
      *
-     * @param string $strVin
-     * @param array $arrTokens
+     * @param  string $strVin
+     * @param  array  $arrTokens
      * @return string
      */
-    public static function getCockpit($strVin,$arrTokens) {
-        return self::getInfo($arrTokens,$strVin,'cockpit');
+    public static function getCockpit($strVin, $arrTokens)
+    {
+        return self::getInfo($arrTokens, $strVin, 'cockpit');
     }
 }

@@ -1,8 +1,10 @@
-<?php 
+<?php
 
 namespace RenaultZoeApi;
 
-
+/**
+ * Class for Giya auth platform
+ */
 class Giya
 {
     // TODO should be retrieved from a local parameter
@@ -13,27 +15,30 @@ class Giya
      * Login de l'utilisateur
      * Permet de récupérer le token puis dans un second temps le personId
      *
-     * @param string $strUserName
-     * @param string $strPassword
+     * @param  string $strUserName
+     * @param  string $strPassword
      * @return array ['GiyaToken', 'GiyaPersonId', GiyaIdToken', 'GiyaIdTokenTime'] or 'KO' or null
      */
-    public static function login($strUserName, $strPassword) {
-
-        $objClient = new \GuzzleHttp\Client([
+    public static function login($strUserName, $strPassword)
+    {
+        $objClient = new \GuzzleHttp\Client(
+            [
             'headers' => [ 'Content-Type' => 'application/json' ]
-        ]);
-        $objRes = $objClient->post(self::$strRootUrl .'/accounts.login',
+            ]
+        );
+        $objRes = $objClient->post(
+            self::$strRootUrl . '/accounts.login',
             ['form_params' => [
-                'ApiKey'=> self::$strApiKey,
-                'loginID'=> $strUserName,
-                'password'=> $strPassword
+                'ApiKey' => self::$strApiKey,
+                'loginID' => $strUserName,
+                'password' => $strPassword
             ]]
         );
         $strResult = $objRes->getBody()->getContents();
         // TODO : LOG
         $objJsonRes = json_decode($strResult);
 
-        if($objJsonRes->{'statusCode'} != 200) {
+        if ($objJsonRes->{'statusCode'} != 200) {
             // TODO : LOG
             return 'KO';
         } else {
@@ -43,7 +48,7 @@ class Giya
 
             $arrTokens = self::getPersonId($strToken);
 
-            if($arrTokens != null) {
+            if ($arrTokens != null) {
                 return array_merge(['GiyaToken' => $strToken], $arrTokens);
             } else {
                 return null;
@@ -54,23 +59,27 @@ class Giya
     /**
      * Permet de récupérer le personId après avoir récupére le token
      *
-     * @param string $strGiyaToken
+     * @param  string $strGiyaToken
      * @return array ['GiyaPersonId', GiyaIdToken', 'GiyaIdTokenTime'] or null
      */
-    private static function getPersonId($strGiyaToken) {
-        $objClient = new \GuzzleHttp\Client([
+    private static function getPersonId($strGiyaToken)
+    {
+        $objClient = new \GuzzleHttp\Client(
+            [
             'headers' => [ 'Content-Type' => 'application/json' ]
-        ]);
-        $objRes = $objClient->post(self::$strRootUrl .'/accounts.getAccountInfo',
+            ]
+        );
+        $objRes = $objClient->post(
+            self::$strRootUrl . '/accounts.getAccountInfo',
             ['form_params' => [
-                'oauth_token'=> $strGiyaToken
+                'oauth_token' => $strGiyaToken
             ]]
         );
         $strResult = $objRes->getBody()->getContents();
         // TODO : LOG
         $objJsonRes = json_decode($strResult);
 
-        if($objJsonRes->{'statusCode'} != 200) {
+        if ($objJsonRes->{'statusCode'} != 200) {
             // TODO : LOG
             return null;
         } else {
@@ -79,7 +88,7 @@ class Giya
             // TODO : LOG
 
             $arrIdToken = self::getJwtToken($strGiyaToken);
-            if($arrIdToken != null) {
+            if ($arrIdToken != null) {
                 return array_merge(['GiyaPersonId' => $strPersonId], $arrIdToken);
             } else {
                 return null;
@@ -90,17 +99,21 @@ class Giya
     /**
      * Get personnal token, public as this expires it could be call for refresh
      *
-     * @param string $strGiyaToken
+     * @param  string $strGiyaToken
      * @return array ['GiyaIdToken', 'GiyaIdTokenTime'] or null
      */
-    public static function getJwtToken($strGiyaToken) {
-        $objClient = new \GuzzleHttp\Client([
+    public static function getJwtToken($strGiyaToken)
+    {
+        $objClient = new \GuzzleHttp\Client(
+            [
             'headers' => [ 'Content-Type' => 'application/json' ]
-        ]);
+            ]
+        );
 
-        $objRes = $objClient->post(self::$strRootUrl .'/accounts.getJWT',
+        $objRes = $objClient->post(
+            self::$strRootUrl . '/accounts.getJWT',
             ['form_params' => [
-                'oauth_token'=> $strGiyaToken,
+                'oauth_token' => $strGiyaToken,
                 'fields' => 'data.personId,data.gigyaDataCenter',
                 'expiration' => 900
             ]]
@@ -109,7 +122,7 @@ class Giya
         // TODO : LOG
         $objJsonRes = json_decode($strResult);
 
-        if($objJsonRes->{'statusCode'} != 200) {
+        if ($objJsonRes->{'statusCode'} != 200) {
             // TODO : LOG
             return null;
         } else {
@@ -118,5 +131,5 @@ class Giya
             // TODO : LOG
             return ['GiyaIdToken' => $strIdToken, 'GiyaIdTokenTime' => $objJsonRes->{'time'}];
         }
-    }    
+    }
 }
