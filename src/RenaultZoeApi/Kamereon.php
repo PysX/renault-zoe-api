@@ -184,7 +184,7 @@ class Kamereon
     /**
      * Get Notification settings
      * Not implemented server side
-     * 
+     *
      * @param  string $strVin
      * @param  array  $arrTokens
      * @return string
@@ -206,6 +206,4 @@ class Kamereon
     {
         return self::getInfo($arrTokens, $strVin, 'lock-status');
     }
-    
-
 }

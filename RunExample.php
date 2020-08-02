@@ -27,7 +27,7 @@ function run()
         checkTokens($arrTokens);
     } else {
         say('> credentials.json not found, first login');
-        $arrGiyaTokens = Giya::login('my_renault_login','my_renault_password');
+        $arrGiyaTokens = Giya::login('my_renault_login', 'my_renault_password');
         // get AccountId and save tokens in credentials.json file
         $arrTokens = Kamereon::getAccounts($arrGiyaTokens);
         Kamereon::getVehicles($arrTokens); // You can get VIN here
