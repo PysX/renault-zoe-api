@@ -71,6 +71,14 @@ function run()
     say($strJson);
     */
 
+    /*
+    say('> getHvacHSessions via Kamereon class');
+    $strJson = Kamereon::getHvacSessions('my_vin',['start'=>'20200701','end'=>'20200731'], $arrTokens);
+    say($strJson);
+    */
+
+
+
     // Example via Vehicle class
     // TODO
 }

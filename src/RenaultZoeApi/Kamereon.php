@@ -199,7 +199,22 @@ class Kamereon
      */
     public static function getHvacHistory($strVin, $arrParams, $arrTokens)
     {
-        return self::getInfo($arrTokens, $strVin, 'hvac-history?type=day&start=20200701&end=20200731');
+        return self::getInfo($arrTokens, $strVin,
+             'hvac-history?type='.$arrParams['type'].'&start='.$arrParams['start'].'&end='.$arrParams['end']);
+    }
+
+    /**
+     * Get HVAC sessions
+     * Not implemented server side
+     * 
+     * @param  string $strVin
+     * @param array $arrParams date start and end format YYYYMMDD
+     * @param  array  $arrTokens
+     * @return string
+     */
+    public static function getHvacSessions($strVin, $arrParams, $arrTokens)
+    {
+        return self::getInfo($arrTokens, $strVin, 'hvac-sessions?start='.$arrParams['start'].'&end='.$arrParams['end']);
     }
 
 
