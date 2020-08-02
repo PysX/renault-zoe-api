@@ -56,12 +56,12 @@ function run()
     
     /* Not implemented server side
     say('> getLockStatus via Kamereon class');
-    $strJson = Kamereon::getLockStatus('***REMOVED***', $arrTokens);
+    $strJson = Kamereon::getLockStatus('my_vin', $arrTokens);
     say($strJson);
     */
     /* Not implemented server side
     say('> getNotificationSettings via Kamereon class');
-    $strJson = Kamereon::getNotificationSettings('***REMOVED***', $arrTokens);
+    $strJson = Kamereon::getNotificationSettings('my_vin', $arrTokens);
     say($strJson);
     */
 
