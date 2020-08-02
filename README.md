@@ -42,6 +42,12 @@ Even if you are not a developer, you can probably help to report some bugs, shar
 
 You need PHP 7.1+
 
+```bash
+composer global require "squizlabs/php_codesniffer=*"
+composer global require friendsofphp/php-cs-fixer
+composer global require rector/rector
+```
+
 #### How to test the project
 
 TODO: not implemented
@@ -53,6 +59,9 @@ Open a [pull request](https://github.com/PysX/renault-zoe-api/pulls) to submit c
 Your pull request needs to meet the following guidelines for acceptance:
 
 - Run following [Rector](https://getrector.org/) code sets : code-quality dead-code coding-style
+- Run ``` ~/.config/composer/vendor/bin/phpcs --standard=PSR12 src/ ```
+- Run ``` ~/.config/composer/vendor/bin/php-cs-fixer src/ ```
+- Run and check result ``` ~/.config/composer/vendor/bin/phpcs --standard=PSR12 src/ ```
 
 ### Feature suggestion or issues
 
