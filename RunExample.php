@@ -41,6 +41,10 @@ function run()
     say('> getCockpit via Kamereon class');
     $strJson = Kamereon::getCockpit('my_vin', $arrTokens);
     say($strJson);
+
+    say('> getLocation via Kamereon class');
+    $strJson = Kamereon::getLocation('my_vin', $arrTokens);
+    say($strJson);
     
     // Example via Vehicle class
     // TODO
