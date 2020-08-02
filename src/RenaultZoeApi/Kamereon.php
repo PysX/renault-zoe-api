@@ -229,7 +229,11 @@ class Kamereon
      */
     public static function getHvacSessions($strVin, $arrParams, $arrTokens)
     {
-        return self::getInfo($arrTokens, $strVin, 'hvac-sessions?start=' . $arrParams['start'] . '&end=' . $arrParams['end']);
+        return self::getInfo(
+            $arrTokens,
+            $strVin,
+            'hvac-sessions?start=' . $arrParams['start'] . '&end=' . $arrParams['end']
+        );
     }
 
 
