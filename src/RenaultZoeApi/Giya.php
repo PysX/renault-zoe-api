@@ -72,7 +72,8 @@ class Giya
         $objRes = $objClient->post(
             self::$strRootUrl . '/accounts.getAccountInfo',
             ['form_params' => [
-                'oauth_token' => $strGiyaToken
+                'ApiKey' => self::$strApiKey,
+                'login_token' => $strGiyaToken
             ]]
         );
         $strResult = $objRes->getBody()->getContents();
@@ -113,7 +114,8 @@ class Giya
         $objRes = $objClient->post(
             self::$strRootUrl . '/accounts.getJWT',
             ['form_params' => [
-                'oauth_token' => $strGiyaToken,
+                'ApiKey' => self::$strApiKey,
+                'login_token' => $strGiyaToken,
                 'fields' => 'data.personId,data.gigyaDataCenter',
                 'expiration' => 900
             ]]
